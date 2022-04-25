@@ -52,13 +52,21 @@
             android:orientation="horizontal">
 
             <Button
+                android:text="back"
+                android:id="@+id/backButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <Button
                 android:id="@+id/blackAndWhite"
                 android:text="B/W"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>
             <Button
-                android:text="feature2"
+                android:text="save"
+                android:id="@+id/saveImage"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>
