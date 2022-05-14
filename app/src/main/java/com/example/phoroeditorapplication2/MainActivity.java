@@ -1,7 +1,5 @@
 package com.example.phoroeditorapplication2;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
@@ -20,10 +18,14 @@ import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.phoroeditorapplication2.databinding.ActivityMainBinding;
 
@@ -33,9 +35,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     // Used to load the 'phoroeditorapplication2' library on application startup.
     static {
@@ -71,8 +75,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //black and white method
-    private static native void blackAndWhite(int pixels[],int width,int height);
+    private static native void grayscale(int pixels[], int width, int height);
+    private static native void bw(int pixels[],int width,int height);
+    private static native void sepia(int pixels[],int width,int height);
+    private static native void pastels(int pixels[],int width,int height);
+    private static native void pixelate(int pixels[],int width,int height);
+    private static native void invert(int[] pixels, int width, int height);
+    private static native void brightness_p(int[] pixels,int width,int height,int brightness);
+    private static native void contrast_p(int[] pixels,int width,int height,int contrast);
 
+    int brightness = 0;
+    int contrast = 0;
+
+    public int truncateBrightness(int brightness){
+        if(brightness>100){
+            return 100;
+        }
+        if(brightness<-100){
+            return -100;
+        }
+        return brightness;
+    }
+    public int truncateContrast(int contrast){
+        if(contrast>255){
+            return 255;
+        }
+        if(contrast<-255){
+            return -255;
+        }
+        return contrast;
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -156,18 +188,43 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        final Button blackAndWhiteButton = findViewById(R.id.blackAndWhite);
-        blackAndWhiteButton.setOnClickListener(new View.OnClickListener() {
+
+        // Spinner element
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+
+        // Spinner click listener
+        spinner.setOnItemSelectedListener(this);
+
+        // Spinner Drop down elements
+        List<String> categories = new ArrayList<String>();
+        categories.add("Select Filter");
+        categories.add("grayscale");
+        categories.add("black and white");
+        categories.add("sepia");
+        categories.add("invert");
+        categories.add("pixelate");
+        categories.add("pastel");
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spinner.setAdapter(dataAdapter);
+
+       final Button brightnessPlus = findViewById(R.id.brightnessPlus);
+
+        brightnessPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new Thread(){
                     public void run(){
-//                        for(int i = 0; i<pixelCount;i++){
-//                            //create an array on bytes
-//                            pixels[i]/=2;
-//                        }
-                        blackAndWhite(pixels,width,height);
-                        bitmap.setPixels(pixels,0,width,0,0,width,height);
+                        pixelsCopy = pixels.clone();
+                        brightness+=5;
+                        brightness_p(pixelsCopy,width,height, truncateBrightness(brightness));
+                        bitmap.setPixels(pixelsCopy,0,width,0,0,width,height);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -178,6 +235,71 @@ public class MainActivity extends AppCompatActivity {
                 }.start();
             }
         });
+
+        final Button brightnessMinus = findViewById(R.id.brightnessMinus);
+        brightnessMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Thread(){
+                    public void run(){
+                        pixelsCopy = pixels.clone();
+                        brightness-=5;
+                        brightness_p(pixelsCopy,width,height, truncateBrightness(brightness));
+                        bitmap.setPixels(pixelsCopy,0,width,0,0,width,height);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                imageView.setImageBitmap(bitmap);
+                            }
+                        });
+                    }
+                }.start();
+            }
+        });
+
+        final Button contrastPlus = findViewById(R.id.contrastPlus);
+
+        contrastPlus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Thread(){
+                    public void run(){
+                        pixelsCopy = pixels.clone();
+                        contrast+=50;
+                        contrast_p(pixelsCopy,width,height,truncateContrast(contrast));
+                        bitmap.setPixels(pixelsCopy,0,width,0,0,width,height);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                imageView.setImageBitmap(bitmap);
+                            }
+                        });
+                    }
+                }.start();
+            }
+        });
+
+        final Button contrastMinus = findViewById(R.id.contrastMinus);
+        contrastMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Thread(){
+                    public void run(){
+                        pixelsCopy = pixels.clone();
+                        contrast-=50;
+                        contrast_p(pixelsCopy,width,height,truncateContrast(contrast));
+                        bitmap.setPixels(pixelsCopy,0,width,0,0,width,height);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                imageView.setImageBitmap(bitmap);
+                            }
+                        });
+                    }
+                }.start();
+            }
+        });
+
         final Button saveButton = findViewById(R.id.saveImage);
         saveButton.setOnClickListener(new View.OnClickListener() {
 
@@ -222,8 +344,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-
     private static final String appID = "photoEditor";
     private Uri imageUri;
     private static final int REQUEST_IMAGE_CAPTURE = 1012;
@@ -234,6 +354,7 @@ public class MainActivity extends AppCompatActivity {
         final File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         return new File(storageDir+imageFileName);
     }
+
     private boolean editMode = false;
     private Bitmap bitmap ;
     private int width = 0;
@@ -241,8 +362,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int MAX_PIXEL_COUNT = 2048;
 
     private int[] pixels;
+    private int[] pixelsCopy;
     private int pixelCount = 0;
-
 
     public void onActivityResult(int requestCode,int resultCode,Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -324,11 +445,83 @@ public class MainActivity extends AppCompatActivity {
 
                 pixelCount = width*height;
                 pixels = new int[pixelCount];
+                pixelsCopy = new int[pixelCount];
                 bitmap.getPixels(pixels,0,width,0,0,width,height);
+                bitmap.getPixels(pixelsCopy,0,width,0,0,width,height);
 
 
             }
         }.start();
+
+    }
+
+    public void setFilter(int filter_no){
+        //Bitmap newBitmap = bitmap.copy(Bitmap.Config.ARGB_8888,true);
+        new Thread(){
+                            public void run(){
+                                pixelsCopy = pixels.clone();
+                                switch (filter_no){
+                                    case 1:
+                                        grayscale(pixelsCopy,width,height);
+                                        break;
+                                    case 2:
+                                        bw(pixelsCopy,width,height);
+                                        break;
+                                    case 3:
+                                        sepia(pixelsCopy,width,height);
+                                        break;
+                                    case 4:
+                                        invert(pixelsCopy,width,height);
+                                        break;
+                                    case 5:
+                                        pixelate(pixelsCopy,width,height);
+                                        break;
+                                    case 6:
+                                        pastels(pixelsCopy,width,height);
+                                        break;
+                                }
+                                bitmap.setPixels(pixelsCopy,0,width,0,0,width,height);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        imageView.setImageBitmap(bitmap);
+                                    }
+                                });
+                            }
+                        }.start();
+    }
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        // On selecting a spinner item
+        String item = adapterView.getItemAtPosition(i).toString();
+        bitmap.setPixels(pixels,0,width,0,0,width,height);
+        switch (i){
+            case 1:
+                setFilter(1);
+                break;
+            case 2:
+                setFilter(2);
+                break;
+            case 3:
+                setFilter(3);
+                break;
+            case 4:
+                setFilter(4);
+                break;
+            case 5:
+                setFilter(5);
+                break;
+            case 6:
+                setFilter(6);
+                break;
+        }
+        // Showing selected spinner item
+        if(i!=0)
+        Toast.makeText(adapterView.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
 }
