@@ -495,6 +495,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         // On selecting a spinner item
         String item = adapterView.getItemAtPosition(i).toString();
+        Toast.makeText(adapterView.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
         bitmap.setPixels(pixels,0,width,0,0,width,height);
         switch (i){
             case 1:
@@ -516,9 +517,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 setFilter(6);
                 break;
         }
-        // Showing selected spinner item
-        if(i!=0)
-            Toast.makeText(adapterView.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+
+
     }
 
     @Override

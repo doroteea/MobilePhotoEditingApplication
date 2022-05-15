@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:background="@drawable/flowers_wp"
         android:gravity="center">
         <TextView
             android:layout_marginBottom="20dp"
@@ -16,6 +17,7 @@
             android:layout_height="100dp"
             android:gravity="center"
             android:text="Photo Editor"
+            android:textColor="@color/black"
             android:textSize="30sp"/>
 
         <Button
@@ -24,11 +26,15 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:text="select image"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/pale_pink"
             />
         <Button
             android:id="@+id/takePhotoButton"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/pale_pink"
             android:text="take photo"
             />
     </LinearLayout>
@@ -38,6 +44,7 @@
         android:visibility="gone"
         android:id="@+id/editScreen"
         android:layout_width="match_parent"
+        android:background="@drawable/pinku"
         android:layout_height="match_parent">
 
         <ImageView
@@ -62,6 +69,8 @@
                 android:layout_marginRight="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/pale_pink"
                 android:text="+"
                 android:id="@+id/brightnessPlus"
                 />
@@ -70,6 +79,8 @@
                 android:layout_marginRight="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/pale_pink"
                 android:text="-"
                 android:id="@+id/brightnessMinus"
                 />
@@ -91,6 +102,8 @@
                 android:layout_marginRight="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/pale_pink"
                 android:text="+"
                 android:id="@+id/contrastPlus"
                 />
@@ -99,6 +112,8 @@
                 android:layout_marginRight="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/pale_pink"
                 android:text="-"
                 android:id="@+id/contrastMinus"
                 />
@@ -119,6 +134,8 @@
                 android:id="@+id/backButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/pale_pink"
                 android:layout_weight="1"/>
 
             <Button
@@ -126,6 +143,8 @@
                 android:id="@+id/saveImage"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/pale_pink"
                 android:layout_weight="1"/>
 
         </LinearLayout>
