@@ -31,23 +31,23 @@ JNIEXPORT void JNICALL
 Java_com_example_phoroeditorapplication2_MainActivity_grayscale(JNIEnv *env, jclass clazz,
                                                                 jintArray pixels, jint width,
                                                                 jint height) {
-jint *pixels_ = (*env).GetIntArrayElements(pixels,NULL);
+    jint *pixels_ = (*env).GetIntArrayElements(pixels,NULL);
 //    jsize len = (*env).GetArrayLength(pixels);
 //    for(int i=0;i<len;i++){
 //        pixels_[i]/=2;
 //    }
-unsigned char *colors = (unsigned char *) pixels_;
-int pixelCount = width * height *4; //char
-int i=0;
-while(i<pixelCount){
-unsigned char average = (colors[i]+ colors[i+1] + colors[i+2])/3; //RGB
+    unsigned char *colors = (unsigned char *) pixels_;
+    int pixelCount = width * height *4; //char
+    int i=0;
+    while(i<pixelCount){
+        unsigned char average = (colors[i]+ colors[i+1] + colors[i+2])/3; //RGB
 //average = 20;
-colors[i] = truncate(average);//truncate(colors[i]*0.5);
-colors[i+1] = truncate(average);//truncate(colors[i+1]*0.5);
-colors[i+2] = truncate(average);//truncate(colors[i+2]*0.5);
-i+=4;
-}
-(*env).ReleaseIntArrayElements(pixels,pixels_,0);
+        colors[i] = truncate(average);//truncate(colors[i]*0.5);
+        colors[i+1] = truncate(average);//truncate(colors[i+1]*0.5);
+        colors[i+2] = truncate(average);//truncate(colors[i+2]*0.5);
+        i+=4;
+    }
+    (*env).ReleaseIntArrayElements(pixels,pixels_,0);
 
 }
 extern "C"
@@ -61,15 +61,15 @@ Java_com_example_phoroeditorapplication2_MainActivity_sepia(JNIEnv *env, jclass 
     int pixelCount = width * height *4; //char
     int i=0;
     while(i<pixelCount){
-    unsigned char average = (colors[i]+ colors[i+1] + colors[i+2])/3; //RGB
-    //average = 20;
-    unsigned char sepiaRed = truncate(0.393*colors[i] + 0.769*colors[i+1] + 0.189*colors[i+2]);
-    unsigned char sepiaGreen = truncate(0.349*colors[i] + 0.686*colors[i+1] + 0.168*colors[i+2]);
-    unsigned char sepiaBlue = truncate(0.272*colors[i] + 0.534*colors[i+1] + 0.131*colors[i+2]);
-    colors[i] = sepiaBlue;//truncate(average);//truncate(colors[i]*0.5);
-    colors[i+1] = sepiaGreen;// truncate(average);//truncate(colors[i+1]*0.5);
-    colors[i+2] = sepiaRed;//truncate(average);//truncate(colors[i+2]*0.5);
-    i+=4;
+        unsigned char average = (colors[i]+ colors[i+1] + colors[i+2])/3; //RGB
+        //average = 20;
+        unsigned char sepiaRed = truncate(0.393*colors[i] + 0.769*colors[i+1] + 0.189*colors[i+2]);
+        unsigned char sepiaGreen = truncate(0.349*colors[i] + 0.686*colors[i+1] + 0.168*colors[i+2]);
+        unsigned char sepiaBlue = truncate(0.272*colors[i] + 0.534*colors[i+1] + 0.131*colors[i+2]);
+        colors[i] = sepiaBlue;//truncate(average);//truncate(colors[i]*0.5);
+        colors[i+1] = sepiaGreen;// truncate(average);//truncate(colors[i+1]*0.5);
+        colors[i+2] = sepiaRed;//truncate(average);//truncate(colors[i+2]*0.5);
+        i+=4;
     }
     (*env).ReleaseIntArrayElements(pixels,pixels_,0);
 }
@@ -114,8 +114,8 @@ Java_com_example_phoroeditorapplication2_MainActivity_pastels(JNIEnv *env, jclas
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_phoroeditorapplication2_MainActivity_pixelate(JNIEnv *env, jclass clazz,
-                                                              jintArray pixels, jint width,
-                                                              jint height) {
+                                                               jintArray pixels, jint width,
+                                                               jint height) {
     // TODO: implement pixelate()
     jint *pixels_ = (*env).GetIntArrayElements(pixels,NULL);
     unsigned char *colors = (unsigned char *) pixels_;
@@ -135,8 +135,8 @@ Java_com_example_phoroeditorapplication2_MainActivity_pixelate(JNIEnv *env, jcla
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_phoroeditorapplication2_MainActivity_invert(JNIEnv *env, jclass clazz,
-                                                               jintArray pixels, jint width,
-                                                               jint height) {
+                                                             jintArray pixels, jint width,
+                                                             jint height) {
     // TODO: implement invert()
     int pixelCount = width * height *4; //char
     jint *pixels_ = (*env).GetIntArrayElements(pixels,NULL);
@@ -200,11 +200,13 @@ Java_com_example_phoroeditorapplication2_MainActivity_contrast_1p(JNIEnv *env, j
     auto *colors = (unsigned char *) pixels_;
     int pixelCount = width * height *4; //char
     int i=0;
-    float factor = (float)(259 * (contrast + 255)) / (float)(255 * (259 - contrast));
+    // (259 * (contrast + 255)) / (255 * (259 – contrast))
+    float factor = (float)(259 * (contrast + 255)) / (float)(255 * (259 -contrast));
+
     while(i<pixelCount){
-        colors[i] = truncate((int)factor*(colors[i]-128)+128);
-        colors[i+1] = truncate((int)factor*(colors[i+1]-128)+128);
-        colors[i+2] = truncate((int)factor*(colors[i+2]-128)+128);
+        colors[i] = truncate(factor*(colors[i]-128)+128);
+        colors[i+1] = truncate(factor*(colors[i+1]-128)+128);
+        colors[i+2] = truncate(factor*(colors[i+2]-128)+128);
         i+=4;
     }
     (*env).ReleaseIntArrayElements(pixels,pixels_,0);

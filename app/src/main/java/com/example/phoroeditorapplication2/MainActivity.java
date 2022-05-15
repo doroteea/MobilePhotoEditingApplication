@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private ActivityMainBinding binding;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,11 +98,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return brightness;
     }
     public int truncateContrast(int contrast){
-        if(contrast>255){
-            return 255;
+        if(contrast>100){
+            return 100;
         }
-        if(contrast<-255){
-            return -255;
+        if(contrast<-100){
+            return -100;
         }
         return contrast;
     }
@@ -214,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // attaching data adapter to spinner
         spinner.setAdapter(dataAdapter);
 
-       final Button brightnessPlus = findViewById(R.id.brightnessPlus);
+        final Button brightnessPlus = findViewById(R.id.brightnessPlus);
 
         brightnessPlus.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -265,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 new Thread(){
                     public void run(){
                         pixelsCopy = pixels.clone();
-                        contrast+=50;
+                        contrast+=5;
                         contrast_p(pixelsCopy,width,height,truncateContrast(contrast));
                         bitmap.setPixels(pixelsCopy,0,width,0,0,width,height);
                         runOnUiThread(new Runnable() {
@@ -286,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 new Thread(){
                     public void run(){
                         pixelsCopy = pixels.clone();
-                        contrast-=50;
+                        contrast-=5;
                         contrast_p(pixelsCopy,width,height,truncateContrast(contrast));
                         bitmap.setPixels(pixelsCopy,0,width,0,0,width,height);
                         runOnUiThread(new Runnable() {
@@ -325,10 +326,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         }
                     }
                 };
-              builder.setMessage("Do you want to save the image?")
-                      .setPositiveButton("Yes",dialogClickListener)
-                      .setNegativeButton("No",dialogClickListener)
-                      .show();
+                builder.setMessage("Do you want to save the image?")
+                        .setPositiveButton("Yes",dialogClickListener)
+                        .setNegativeButton("No",dialogClickListener)
+                        .show();
             }
         });
 
@@ -337,9 +338,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             @Override
             public void onClick(View view) {
-               findViewById(R.id.editScreen).setVisibility(View.GONE);
-               findViewById(R.id.welcomeScreen).setVisibility(View.VISIBLE);
-               editMode = false;
+                findViewById(R.id.editScreen).setVisibility(View.GONE);
+                findViewById(R.id.welcomeScreen).setVisibility(View.VISIBLE);
+                editMode = false;
             }
         });
     }
@@ -458,37 +459,37 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void setFilter(int filter_no){
         //Bitmap newBitmap = bitmap.copy(Bitmap.Config.ARGB_8888,true);
         new Thread(){
-                            public void run(){
-                                pixelsCopy = pixels.clone();
-                                switch (filter_no){
-                                    case 1:
-                                        grayscale(pixelsCopy,width,height);
-                                        break;
-                                    case 2:
-                                        bw(pixelsCopy,width,height);
-                                        break;
-                                    case 3:
-                                        sepia(pixelsCopy,width,height);
-                                        break;
-                                    case 4:
-                                        invert(pixelsCopy,width,height);
-                                        break;
-                                    case 5:
-                                        pixelate(pixelsCopy,width,height);
-                                        break;
-                                    case 6:
-                                        pastels(pixelsCopy,width,height);
-                                        break;
-                                }
-                                bitmap.setPixels(pixelsCopy,0,width,0,0,width,height);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        imageView.setImageBitmap(bitmap);
-                                    }
-                                });
-                            }
-                        }.start();
+            public void run(){
+                pixelsCopy = pixels.clone();
+                switch (filter_no){
+                    case 1:
+                        grayscale(pixelsCopy,width,height);
+                        break;
+                    case 2:
+                        bw(pixelsCopy,width,height);
+                        break;
+                    case 3:
+                        sepia(pixelsCopy,width,height);
+                        break;
+                    case 4:
+                        invert(pixelsCopy,width,height);
+                        break;
+                    case 5:
+                        pixelate(pixelsCopy,width,height);
+                        break;
+                    case 6:
+                        pastels(pixelsCopy,width,height);
+                        break;
+                }
+                bitmap.setPixels(pixelsCopy,0,width,0,0,width,height);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        imageView.setImageBitmap(bitmap);
+                    }
+                });
+            }
+        }.start();
     }
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -517,7 +518,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         // Showing selected spinner item
         if(i!=0)
-        Toast.makeText(adapterView.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+            Toast.makeText(adapterView.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
     }
 
     @Override
